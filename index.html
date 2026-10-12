@@ -3,53 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Maker & Supabase Dashboard</title>
+    <title>Binusian Space Lounge - Terminal Control Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        .pixel-font { font-family: 'VT323', monospace; }
-        body { font-family: 'Inter', sans-serif; }
-        .pixel-box { border: 3px solid #1e293b; box-shadow: 4px 4px 0px #1e293b; }
-        .pixel-btn { border: 2px solid #1e293b; box-shadow: 2px 2px 0px #1e293b; transition: all 0.1s ease; }
-        .pixel-btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px #1e293b; }
-        .pixel-input { border: 2px solid #1e293b; outline: none; }
-        .pixel-input:focus { ring: 2px; border-color: #4f46e5; }
+        .sci-font { font-family: 'Orbitron', sans-serif; }
+        .mono-font { font-family: 'Share Tech Mono', monospace; }
+        body { 
+            font-family: 'Share Tech Mono', monospace; 
+            background-color: #030712; 
+            background-image: radial-gradient(circle at 50% 50%, #111827 0%, #030712 100%);
+        }
+        .scifi-box { 
+            border: 1px solid rgba(56, 189, 248, 0.3); 
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.15);
+        }
+        .scifi-btn { 
+            border: 1px solid #38bdf8; 
+            background: rgba(14, 165, 233, 0.1);
+            transition: all 0.2s ease; 
+        }
+        .scifi-btn:hover { 
+            background: rgba(14, 165, 233, 0.3);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+        .scifi-input { 
+            border: 1px solid rgba(56, 189, 248, 0.4); 
+            background: rgba(3, 7, 18, 0.8);
+            color: #38bdf8;
+            outline: none; 
+        }
+        .scifi-input:focus { 
+            border-color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 3px; }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen p-6">
+<body class="text-sky-100 min-h-screen p-6">
 
-    <div class="max-w-6xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
         <!-- Header -->
-        <header class="pixel-box bg-white p-6 flex flex-col md:flex-row justify-between items-center rounded-lg">
+        <header class="scifi-box p-6 rounded-xl flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div>
-                <h1 class="pixel-font text-4xl text-indigo-600 tracking-wider">GAME MAKER DATABASE DASHBOARD</h1>
-                <p class="text-sm text-slate-500">Live sync dari Sidebar Game Maker &rarr; Supabase &rarr; GitHub Pages/Vercel</p>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></span>
+                    <span class="text-xs uppercase tracking-widest text-sky-400 mono-font">SYSTEM ONLINE // SECURE NODE</span>
+                </div>
+                <h1 class="sci-font text-3xl md:text-4xl text-sky-300 tracking-wider mt-1">BINUSIAN SPACE LOUNGE</h1>
+                <p class="text-xs text-sky-400/70 mono-font mt-1">Interstellar Transit & Cafe Terminal &bull; Database Sync Pipeline Active</p>
             </div>
             <div class="mt-4 md:mt-0 flex gap-3">
-                <button onclick="fetchSupabaseData()" class="pixel-btn bg-amber-300 px-4 py-2 font-semibold text-sm rounded hover:bg-amber-400">
-                    🔄 Refresh Data
+                <button onclick="fetchSupabaseData()" class="scifi-btn px-4 py-2 font-semibold text-xs rounded sci-font text-sky-300 flex items-center gap-2">
+                    <span>🔄</span> SYNC DATA
                 </button>
-                <button onclick="runNormalization()" class="pixel-btn bg-emerald-400 px-4 py-2 font-semibold text-sm rounded hover:bg-emerald-500">
-                    ⚙️ Normalisasi Data
+                <button onclick="runNormalization()" class="scifi-btn bg-emerald-500/20 border-emerald-400 text-emerald-300 px-4 py-2 font-semibold text-xs rounded sci-font">
+                    <span>⚙️</span> NORMALIZE
                 </button>
             </div>
         </header>
 
         <!-- Form Input Data Langsung ke Supabase -->
-        <section class="pixel-box bg-white p-6 rounded-lg space-y-4">
-            <h2 class="pixel-font text-2xl text-slate-700">✍️ Input Data Baru ke Supabase (Web Form)</h2>
-            <form id="insertForm" onsubmit="submitDataToSupabase(event)" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                <input type="text" id="inputName" placeholder="Name" required class="pixel-input p-2 text-sm rounded bg-slate-50">
-                <input type="number" id="inputAge" placeholder="Age" required class="pixel-input p-2 text-sm rounded bg-slate-50">
-                <input type="email" id="inputEmail" placeholder="Email (@)" required class="pixel-input p-2 text-sm rounded bg-slate-50">
-                <input type="text" id="inputPhone" placeholder="Phone (min 10)" required class="pixel-input p-2 text-sm rounded bg-slate-50">
-                <select id="inputEdu" class="pixel-input p-2 text-sm rounded bg-slate-50">
-                    <option value="SMA">SMA</option>
-                    <option value="SMK">SMK</option>
+        <section class="scifi-box p-6 rounded-xl space-y-4">
+            <h2 class="sci-font text-lg text-sky-300 flex items-center gap-2">
+                <span class="text-sky-400">⚡</span> REGISTER NEW TRAVELER (WEB ENTRY)
+            </h2>
+            <form id="insertForm" onsubmit="submitDataToSupabase(event)" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-3">
+                <input type="text" id="inputName" placeholder="Traveler Name" required class="scifi-input p-2.5 text-xs rounded">
+                <input type="number" id="inputAge" placeholder="Age" required class="scifi-input p-2.5 text-xs rounded">
+                <input type="email" id="inputEmail" placeholder="Email (@)" required class="scifi-input p-2.5 text-xs rounded">
+                <input type="text" id="inputPhone" placeholder="Phone (min 10)" required class="scifi-input p-2.5 text-xs rounded">
+                <select id="inputGender" class="scifi-input p-2.5 text-xs rounded">
+                    <option value="Laki-laki" class="bg-slate-900">Laki-laki</option>
+                    <option value="Perempuan" class="bg-slate-900">Perempuan</option>
                 </select>
-                <input type="text" id="inputMajor" placeholder="Major (IPA/RPL...)" required class="pixel-input p-2 text-sm rounded bg-slate-50">
-                <button type="submit" class="pixel-btn bg-indigo-500 text-white font-semibold py-2 px-4 rounded md:col-span-3 lg:col-span-6 hover:bg-indigo-600">
-                    💾 Insert ke Database Supabase
+                <select id="inputEdu" class="scifi-input p-2.5 text-xs rounded">
+                    <option value="SMA" class="bg-slate-900">SMA</option>
+                    <option value="SMK" class="bg-slate-900">SMK</option>
+                </select>
+                <input type="text" id="inputMajor" placeholder="Major (IPA/RPL...)" required class="scifi-input p-2.5 text-xs rounded">
+                
+                <button type="submit" class="col-span-full scifi-btn bg-sky-500/20 text-sky-200 font-semibold py-3 px-4 rounded sci-font tracking-wider hover:bg-sky-500/40 text-xs">
+                    [ TRANSMIT & INSERT TO SUPABASE DATABASE ]
                 </button>
             </form>
         </section>
@@ -57,37 +98,41 @@
         <!-- Main Content -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Panel Anomali / Error Check -->
-            <div class="pixel-box bg-white p-6 rounded-lg space-y-4">
-                <h2 class="pixel-font text-2xl text-rose-600 border-b-2 border-slate-200 pb-2">🚨 Anomaly & Error Check</h2>
-                <p class="text-xs text-slate-500">Mendeteksi input dari game atau web yang tidak valid (contoh: email tanpa @ atau nomor telepon terlalu pendek).</p>
+            <div class="scifi-box p-6 rounded-xl space-y-4">
+                <h2 class="sci-font text-lg text-rose-400 border-b border-rose-500/20 pb-2 flex items-center gap-2">
+                    <span>🚨</span> ANOMALY DETECTOR
+                </h2>
+                <p class="text-xs text-slate-400">Memindai data anomali atau tidak valid dari terminal game & web (format email/telepon rusak).</p>
                 
                 <div id="anomalyList" class="space-y-3 max-h-96 overflow-y-auto pr-2">
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded text-sm">
-                        Memeriksa data anomali...
+                    <div class="p-3 bg-slate-900/80 border border-slate-700 rounded text-xs text-sky-400/60 animate-pulse">
+                        Scanning sector database...
                     </div>
                 </div>
             </div>
 
             <!-- Tabel Data Utama -->
-            <div class="pixel-box bg-white p-6 rounded-lg lg:col-span-2 overflow-x-auto">
+            <div class="scifi-box p-6 rounded-xl lg:col-span-2 overflow-x-auto">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="pixel-font text-2xl text-slate-700">📊 Tabel Data Player</h2>
-                    <span id="recordCount" class="pixel-font text-lg bg-slate-100 px-2 py-1 rounded">Total: 0 Data</span>
+                    <h2 class="sci-font text-lg text-sky-300 flex items-center gap-2">
+                        <span>📊</span> ACTIVE TRAVELER REGISTRY
+                    </h2>
+                    <span id="recordCount" class="sci-font text-xs bg-sky-950 border border-sky-500/30 text-sky-300 px-3 py-1 rounded">TOTAL: 0 RECORDS</span>
                 </div>
                 
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-800 text-white text-sm pixel-font tracking-wide">
-                            <th class="p-3">Name</th>
-                            <th class="p-3">Age & Edu</th>
-                            <th class="p-3">Contact (Email / Phone)</th>
-                            <th class="p-3">Major</th>
+                        <tr class="bg-slate-900/90 text-sky-400 text-xs sci-font tracking-wider border-b border-sky-500/20">
+                            <th class="p-3">Traveler Name</th>
+                            <th class="p-3">Demographics</th>
+                            <th class="p-3">Comms (Email / Phone)</th>
+                            <th class="p-3">Gender / Major</th>
                             <th class="p-3">Status</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody" class="divide-y divide-slate-200 text-sm">
+                    <tbody id="tableBody" class="divide-y divide-sky-900/20 text-xs">
                         <tr>
-                            <td colspan="5" class="p-4 text-center text-slate-400">Menghubungkan ke Supabase...</td>
+                            <td colspan="5" class="p-6 text-center text-sky-400/50">Establishing secure link to Supabase...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -96,13 +141,11 @@
     </div>
 
     <script>
-        // Perbaikan: SUPABASE_URL hanya berisi domain dasarnya saja
-        const SUPABASE_URL = "https://xynpuoobzqsemvtsaueu.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5bnB1b29ienFzZW12dHNhdWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTY2NjksImV4cCI6MjEwNzA5MjY2OX0.ayW4KhLEVckE0au4V_SsdWUfDVQEviDqpV56V6348xQ";
+        const SUPABASE_URL = "https://ewjtsqekfggwamnzemgd.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anRzcWVrZmdnd2FtbnplbWdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMjIzMzAsImV4cCI6MjEwNjU5ODMzMH0.isjaQJs2YsA1C7vn5e4VyAhLI_beCUcAC0aTqDwrBu4";
 
         async function fetchSupabaseData() {
             try {
-                // Di sini otomatis digabung dengan benar: SUPABASE_URL + /rest/v1/game_users
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/game_users?select=*`, {
                     headers: {
                         "apikey": SUPABASE_ANON_KEY,
@@ -115,7 +158,7 @@
                 renderDashboard(data);
             } catch (error) {
                 console.error("Error:", error);
-                document.getElementById('tableBody').innerHTML = `<tr><td colspan="5" class="p-4 text-center text-rose-500">Gagal memuat data dari Supabase. Cek konfigurasi URL & Key.</td></tr>`;
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="5" class="p-4 text-center text-rose-400">Gagal menyinkronkan data dari Supabase. Cek koneksi terminal.</td></tr>`;
             }
         }
 
@@ -127,6 +170,7 @@
                 age: document.getElementById('inputAge').value,
                 email: document.getElementById('inputEmail').value,
                 phone: document.getElementById('inputPhone').value,
+                gender: document.getElementById('inputGender').value,
                 edu: document.getElementById('inputEdu').value,
                 major: document.getElementById('inputMajor').value
             };
@@ -145,19 +189,19 @@
 
                 if (!response.ok) throw new Error("Gagal memasukkan data.");
                 
-                alert("Data berhasil di-insert ke Supabase!");
+                alert("Data traveler berhasil ditransmisikan ke Supabase!");
                 document.getElementById('insertForm').reset();
-                fetchSupabaseData(); // Refresh tabel secara otomatis
+                fetchSupabaseData();
             } catch (error) {
                 console.error("Error:", error);
-                alert("Gagal mengirim data. Cek koneksi atau struktur tabel.");
+                alert("Transmisi gagal. Periksa kembali struktur tabel.");
             }
         }
 
         function renderDashboard(data) {
             const tableBody = document.getElementById('tableBody');
             const anomalyList = document.getElementById('anomalyList');
-            document.getElementById('recordCount').innerText = `Total: ${data.length} Data`;
+            document.getElementById('recordCount').innerText = `TOTAL: ${data.length} RECORDS`;
 
             tableBody.innerHTML = '';
             anomalyList.innerHTML = '';
@@ -168,6 +212,7 @@
                 let cleanName = row.name ? row.name.trim() : "Unknown";
                 let cleanEdu = row.edu ? row.edu.toUpperCase() : "-";
                 let cleanMajor = row.major ? row.major.toUpperCase() : "-";
+                let cleanGender = row.gender || "-";
                 let ageNum = parseInt(row.age) || 0;
 
                 let hasEmailError = !row.email || !row.email.includes("@");
@@ -176,15 +221,15 @@
 
                 let isAnomalous = hasEmailError || hasPhoneError || hasAgeError;
                 let statusBadge = isAnomalous 
-                    ? '<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded text-xs font-bold">⚠️ Anomali</span>' 
-                    : '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold">✅ Valid</span>';
+                    ? '<span class="bg-rose-950 border border-rose-500/40 text-rose-300 px-2 py-0.5 rounded text-[10px] font-bold">⚠️ ANOMALY</span>' 
+                    : '<span class="bg-emerald-950 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded text-[10px] font-bold">✅ SECURE</span>';
 
                 tableBody.innerHTML += `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-3 font-semibold">${cleanName}</td>
-                        <td class="p-3 text-slate-600">${row.age} thn (${cleanEdu})</td>
-                        <td class="p-3 text-xs text-slate-500">${row.email || '-'}<br>${row.phone || '-'}</td>
-                        <td class="p-3 font-medium text-indigo-600">${cleanMajor}</td>
+                    <tr class="hover:bg-sky-950/30 transition-colors">
+                        <td class="p-3 font-semibold text-sky-200">${cleanName}</td>
+                        <td class="p-3 text-sky-400/80">${row.age} yrs (${cleanEdu})</td>
+                        <td class="p-3 text-slate-400 text-[11px]">${row.email || '-'}<br>${row.phone || '-'}</td>
+                        <td class="p-3"><span class="text-sky-300">${cleanGender}</span><br><span class="text-indigo-400 font-medium">${cleanMajor}</span></td>
                         <td class="p-3">${statusBadge}</td>
                     </tr>
                 `;
@@ -192,26 +237,26 @@
                 if (isAnomalous) {
                     anomalyCount++;
                     let reasons = [];
-                    if (hasEmailError) reasons.push("Email Invalid");
-                    if (hasPhoneError) reasons.push("No. Telp Pendek");
-                    if (hasAgeError) reasons.push("Umur Ekstrem");
+                    if (hasEmailError) reasons.push("Invalid Comms (Email)");
+                    if (hasPhoneError) reasons.push("Short Frequency (Phone)");
+                    if (hasAgeError) reasons.push("Age Out of Range");
 
                     anomalyList.innerHTML += `
-                        <div class="p-3 bg-rose-50 border-l-4 border-rose-500 rounded text-xs space-y-1">
-                            <p class="font-bold text-rose-900">${row.name}</p>
-                            <p class="text-rose-700">Masalah: ${reasons.join(", ")}</p>
+                        <div class="p-3 bg-rose-950/40 border-l-2 border-rose-500 rounded text-xs space-y-1">
+                            <p class="font-bold text-rose-200">${row.name}</p>
+                            <p class="text-rose-400/80">Anomaly: ${reasons.join(", ")}</p>
                         </div>
                     `;
                 }
             });
 
             if (anomalyCount === 0) {
-                anomalyList.innerHTML = '<div class="p-3 bg-emerald-50 text-emerald-700 rounded text-sm text-center">Semua data bersih & valid!</div>';
+                anomalyList.innerHTML = '<div class="p-3 bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 rounded text-xs text-center">System Clean: No anomalies detected.</div>';
             }
         }
 
         function runNormalization() {
-            alert("Normalisasi berhasil dijalankan: Format teks dan struktur data telah dirapikan.");
+            alert("Normalisasi sektor dijalankan: Struktur data dan format terminal berhasil dirapikan.");
             fetchSupabaseData();
         }
 
